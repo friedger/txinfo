@@ -1,3 +1,5 @@
+import { AddressEncoding, Chain } from "@/types";
+
 export const addrEncoding = (chain: Chain): AddressEncoding => {
   switch (chain) {
     case "stacks":
