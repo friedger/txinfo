@@ -1,11 +1,11 @@
 import chains from "@/chains.json";
-import { ChainConfig } from "@/types";
+import type { Chain, ChainConfig } from "@/types";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const contractAddress = searchParams.get("address");
-  const chain = searchParams.get("chain");
-  const chainConfig: ChainConfig = chains[chain as keyof typeof chains];
+  const chain = searchParams.get("chain") as Chain;
+  const chainConfig: ChainConfig = chains[chain];
   const apikey = process.env[`${chain?.toUpperCase()}_ETHERSCAN_API_KEY`];
   if (!apikey) {
     console.error("No API key found for", chainConfig.explorer_api);

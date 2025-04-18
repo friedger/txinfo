@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
 import CopyableValue from "./CopyableValue";
 import { useTxDetails } from "@/utils/crypto";
-import type { URI, ChainConfig } from "@/types";
+import type { URI, ChainConfig, Chain } from "@/types";
 import chains from "@/chains.json";
 import { decomposeURI } from "@/lib/utils";
 import { useState } from "react";
@@ -20,8 +20,8 @@ export default function TxDetails({ uri, chain }: { chain: string; uri: URI }) {
   let chainConfig: ChainConfig | undefined;
   let chainName: string | undefined;
   Object.keys(chains).forEach((key) => {
-    if (chains[key as keyof typeof chains].id === chainId) {
-      chainConfig = chains[key as keyof typeof chains];
+    if (chains[key as Chain].id === chainId) {
+      chainConfig = chains[key as Chain];
       chainName = key;
       return;
     }

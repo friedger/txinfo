@@ -25,6 +25,10 @@ const FEATURED_ACCOUNTS = [
     name: "Vitalik.eth on Ethereum",
     path: "/ethereum/address/vitalik.eth",
   },
+  {
+    name: "Friedger on Stacks",
+    path: "/stacks/address/SPN4Y5QPGQA8882ZXW90ADC2DHYXMSTN8VAR8C3X"
+  }
 ];
 
 export default function Home() {
@@ -147,9 +151,9 @@ export default function Home() {
                     <span className="text-sm text-muted-foreground">
                       {path.indexOf("0x") > 0
                         ? path.replace(
-                            /0x.{40}/,
-                            truncateAddress(path.split("/")[3] as Address)
-                          )
+                          /0x.{40}/,
+                          truncateAddress(path.split("/")[3] as Address)
+                        )
                         : path}
                     </span>
                   </div>

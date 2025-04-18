@@ -22,7 +22,7 @@ import relays from "@/relays.json";
 import { decode, nsecEncode, npubEncode } from "nostr-tools/nip19";
 import { db } from "@/services/db";
 import { insertEventIntoDescendingList } from "nostr-tools/utils";
-import { ProfileData, URI } from "@/types";
+import { Chain, ProfileData, URI } from "@/types";
 import { NostrUserBox } from "@/components/NostrUserBox";
 import NostrEditProfileModal from "@/components/NostrEditProfileModal";
 
@@ -43,11 +43,9 @@ export type NostrProfile = {
   website: string;
 };
 
-type BlockchainKind =
-  | "bitcoin:tx"
-  | "bitcoin:address"
-  | "ethereum:tx"
-  | "ethereum:address";
+// [NIP 73](https://github.com/nostr-protocol/nips/blob/master/73.md)
+type DataType = "tx" | "address";
+type BlockchainKind = `${Chain}:${DataType}`;
 
 interface NostrContextType {
   pool: SimplePool | null;

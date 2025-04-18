@@ -1,11 +1,7 @@
-import chains from "@/chains.json";
-import type { Chain, ChainConfig, EtherscanResponse } from "@/types/index.d.ts";
+import * as chains from "../../../chains.json";
+import { Chain, ChainConfig, EtherscanResponse } from "@/types";
 
 let cache: Record<string, EtherscanResponse> = {};
-
-setInterval(() => {
-  cache = {};
-}, 1000 * 60); // empty cache every minute
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -58,21 +54,5 @@ export async function GET(req: Request) {
     throw new Error(`No explorer API found for chain ${chain}`);
   }
 
-  const apicall = `${chainConfig.explorer_api}/api?${params.toString()}`;
-  const response = await fetch(apicall);
-  const data = await response.json();
-  if (data.status === "1") {
-    cache[cacheKey] = data;
-    return Response.json(data, {
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "public, s-maxage=600, stale-while-revalidate=86400",
-      },
-    });
-  }
-  console.error("Failed to fetch contract info", data);
-  return Response.json(
-    { error: `Failed to fetch contract info (${data?.result})` },
-    { status: 500 }
-  );
+  throw new Error("Not yet implemented");
 }

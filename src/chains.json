@@ -127,5 +127,13 @@
       "wss://gnosis-rpc.publicnode.com",
       "wss://gnosis-pokt.nodies.app/ws"
     ]
+  },
+  "stacks": {
+    "id": 1,
+    "explorer_url": "https://explorer.hiro.co",
+    "explorer_name": "Stacks Explorer",
+    "rpc": "https://api.hiro.so",
+    "ws": "wss://api.hiro.so",
+    "api_type": "rosetta"
   }
 }

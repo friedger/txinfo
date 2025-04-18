@@ -14,6 +14,7 @@ import type {
   URI,
   Transaction,
   BlockchainTransaction,
+  Chain,
 } from "@/types";
 import { useNostr } from "@/providers/NostrProvider";
 import StatsCards from "./StatsCards";
@@ -23,7 +24,7 @@ import { formatTimestamp, generateURI } from "@/lib/utils";
 import { ethers } from "ethers";
 import Pagination from "./Pagination";
 interface Props {
-  chain: string;
+  chain: Chain;
   tokenAddress?: Address;
   accountAddress?: Address;
 }
@@ -99,7 +100,7 @@ export default function Transactions({
   });
   const [error, setError] = useState<string | null>(null);
 
-  const chainConfig = chains[chain as keyof typeof chains];
+  const chainConfig = chains[chain];
   const referenceAccount = accountAddress
     ? accountAddress
     : "0x0000000000000000000000000000000000000000";
@@ -168,8 +169,8 @@ export default function Transactions({
   const filteredTransactions = useMemo(() => {
     return transactions.length > 0
       ? transactions.filter((tx) =>
-          applyTxFilter(tx, transactionsFilter, accountAddress)
-        )
+        applyTxFilter(tx, transactionsFilter, accountAddress)
+      )
       : [];
   }, [transactions, transactionsFilter, accountAddress]);
 
@@ -200,11 +201,15 @@ export default function Transactions({
     const fetchPastTransactions = async () => {
       try {
         const transactions: BlockchainTransaction[] | null =
-          await getTransactionsFromEtherscan(
-            chain,
-            accountAddress,
-            tokenAddress
-          );
+          chainConfig.explorer_name === "etherscan" ?
+            await getTransactionsFromEtherscan(
+              chain,
+              accountAddress,
+              tokenAddress
+            )
+            : await getTransactionsFromHiro(
+              chain, accountAddress, tokenAddress);
+
         if (transactions) {
           setTransactions(transactions);
         }
@@ -265,8 +270,8 @@ export default function Transactions({
     transactionsFilter.selectedTokens.length > 0
       ? transactionsFilter.selectedTokens
       : availableTokens.length === 1
-      ? availableTokens
-      : [];
+        ? availableTokens
+        : [];
   return (
     <div className="space-y-6">
       {/* Filters */}

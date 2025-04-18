@@ -1,12 +1,12 @@
 import chains from "@/chains.json";
-import type { ChainConfig } from "@/types/index.d.ts";
+import type { Chain, ChainConfig } from "@/types/index.d.ts";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const address = searchParams.get("address");
-  const chain = searchParams.get("chain");
+  const chain = searchParams.get("chain") as Chain;
   const tokenAddress = searchParams.get("tokenAddress");
-  const chainConfig: ChainConfig = chains[chain as keyof typeof chains];
+  const chainConfig: ChainConfig = chains[chain];
   const apikey = process.env[`${chain?.toUpperCase()}_ETHERSCAN_API_KEY`];
 
   if (!apikey) {

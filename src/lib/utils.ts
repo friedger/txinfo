@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatInTimeZone } from "date-fns-tz";
-import { Address, ChainConfig, ProfileData, URI } from "@/types";
+import { Address, Chain, ChainConfig, ProfileData, URI } from "@/types";
 import { npubEncode } from "nostr-tools/nip19";
 import chains from "@/chains.json";
 import { NostrNote } from "@/providers/NostrProvider";
@@ -29,9 +29,7 @@ export const getChainSlugFromChainId = (
   chainId?: number
 ): string | undefined => {
   if (!chainId) return undefined;
-  return Object.keys(chains).find(
-    (key) => chains[key as keyof typeof chains].id === chainId
-  );
+  return Object.keys(chains).find((key) => chains[key as Chain].id === chainId);
 };
 
 export const getProfileFromNote = (
@@ -150,7 +148,7 @@ export function getTxInfoUrlFromURI(uri?: string) {
   const value = parts[3];
   let res;
   Object.keys(chains).forEach((slug) => {
-    const config = chains[slug as keyof typeof chains] as ChainConfig;
+    const config = chains[slug as Chain] as ChainConfig;
     if (config.id === chainId) {
       res = `/${slug}/${addressType}/${value}`;
       return;

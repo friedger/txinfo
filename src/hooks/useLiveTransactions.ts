@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { JsonRpcProvider, WebSocketProvider, Log, ethers } from "ethers";
 import chains from "@/chains.json";
-import { Address, BlockchainTransaction, ChainConfig } from "@/types";
+import { Address, BlockchainTransaction, Chain, ChainConfig } from "@/types";
 import { getTxFromLog } from "@/utils/crypto";
 
 const TRANSFER_TOPIC = ethers.id("Transfer(address,address,uint256)");
@@ -52,7 +52,7 @@ export function useLiveTransactions({
   accountAddress,
   maxTransactionsPerMinute = 100, // default limit
 }: {
-  chain: string;
+  chain: Chain;
   tokenAddress?: Address;
   accountAddress?: Address;
   maxTransactionsPerMinute?: number;
@@ -65,7 +65,7 @@ export function useLiveTransactions({
   const timePer10Transactions = Math.ceil(
     (60 * 1000) / maxTransactionsPerMinute
   );
-  const chainConfig: ChainConfig = chains[chain as keyof typeof chains];
+  const chainConfig: ChainConfig = chains[chain];
   // if (!chainConfig?.ws) {
   //   console.error(`No WebSocket configuration found for chain ${chain}`);
   //   return null;

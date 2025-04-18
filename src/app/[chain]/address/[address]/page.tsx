@@ -3,10 +3,11 @@ import AddressInfo from "@/components/AddressInfo";
 import type { Address } from "@/types";
 import { getAddressFromENSName } from "@/utils/crypto.server";
 import { isAddress } from "ethers";
+import { addrEncoding, Chain } from "@/lib/blockchain";
 export default async function Page({
   params,
 }: {
-  params: Promise<{ chain: string; address: string }>;
+  params: Promise<{ chain: Chain; address: string }>;
 }) {
   const { chain, address } = await params;
 
@@ -24,7 +25,7 @@ export default async function Page({
     }
   }
 
-  if (!addr || !isAddress(addr)) {
+  if (!addr || (!isAddress(addr) && addrEncoding(chain) === "evm")) {
     return <div>Invalid address</div>;
   }
 

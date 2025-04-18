@@ -1,3 +1,8 @@
+import chains from "../chains.json";
+
+export type Chain = keyof typeof chains;
+export type AddressEncoding = "bech32_base58" | "evm" | "c32check";
+
 type HexString<Length extends number> = `0x${string}` & { length: Length };
 export type Address = HexString<42>;
 

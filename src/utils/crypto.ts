@@ -11,6 +11,7 @@ import type {
   Address,
   TxHash,
   BlockchainTransaction,
+  Chain,
 } from "@/types/index.d.ts";
 import * as crypto from "./crypto.server";
 export const truncateAddress = crypto.truncateAddress;
@@ -130,12 +131,12 @@ interface TxDetails extends BlockchainTransaction {
   events: LogEvent[];
 }
 
-export function useTxDetails(chain: string, txHash?: string) {
+export function useTxDetails(chain: Chain, txHash?: string) {
   const [txDetails, setTxDetails] = useState<TxDetails | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const chainConfig = chains[chain as keyof typeof chains];
+  const chainConfig = chains[chain];
   if (!chainConfig) {
     throw new Error(`Chain not found: ${chain}`);
   }
@@ -177,18 +178,20 @@ export function useTxDetails(chain: string, txHash?: string) {
   return [txDetails, isLoading, error] as const;
 }
 
+export type AddressType = "eoa" | "contract" | "token" | undefined;
+
 export async function getAddressType(
   chain: string,
   address: string,
   provider: JsonRpcProvider
-): Promise<"eoa" | "contract" | "token" | undefined> {
+): Promise<AddressType> {
   const key = `${chain}:${address}:type`;
   const cached = localStorage.getItem(key);
   if (cached) {
     return cached as "eoa" | "contract" | "token";
   }
   const code = await provider.getCode(address);
-  let res: "eoa" | "contract" | "token" | undefined;
+  let res: AddressType;
   if (code === "0x") {
     console.log(`${address} is an EOA (Externally Owned Account).`);
     res = "eoa";
@@ -544,7 +547,7 @@ export async function getBlockRangeForAddress(
 }
 
 export async function getTransactionsFromEtherscan(
-  chain: string,
+  chain: Chain,
   address?: string,
   tokenAddress?: string
 ): Promise<null | BlockchainTransaction[]> {
@@ -579,9 +582,7 @@ export async function getTransactionsFromEtherscan(
 
   // Add optional filters
   if (address) {
-    const provider = new JsonRpcProvider(
-      chains[chain as keyof typeof chains].rpc[0]
-    );
+    const provider = new JsonRpcProvider(chains[chain].rpc[0]);
     const addressType = await getAddressType(chain, address, provider);
     switch (addressType) {
       case "eoa":
@@ -637,7 +638,7 @@ export async function getTransactionsFromEtherscan(
   }
 }
 
-export function useTokenDetails(chain: string, contractAddress: string) {
+export function useTokenDetails(chain: Chain, contractAddress: string) {
   const [token, setToken] = useState<{
     name: string;
     symbol: string;
@@ -658,7 +659,7 @@ export function useTokenDetails(chain: string, contractAddress: string) {
         setIsLoading(true);
         setError(null);
 
-        const chainConfig = chains[chain as keyof typeof chains];
+        const chainConfig = chains[chain];
         if (!chainConfig) {
           throw new Error(`Chain not found: ${chain}`);
         }

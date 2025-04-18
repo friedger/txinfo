@@ -4,14 +4,15 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import chains from "../chains.json";
 import { ExternalLink } from "lucide-react";
 import { useTokenDetails } from "@/utils/crypto";
+import { Chain } from "@/types";
 export default function TokenDetails({
   chain,
   address,
 }: {
-  chain: string;
+  chain: Chain;
   address: string;
 }) {
-  const chainConfig = chains[chain as keyof typeof chains];
+  const chainConfig = chains[chain];
 
   const [token, isLoading, error] = useTokenDetails(chain, address);
 

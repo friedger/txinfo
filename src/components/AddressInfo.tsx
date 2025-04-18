@@ -10,7 +10,7 @@ import { useNostr } from "@/providers/NostrProvider";
 import EditMetadataForm from "@/components/EditMetadataForm";
 import { getENSDetailsFromAddress } from "@/utils/crypto.server";
 import { generateURI, getProfileFromNote } from "@/lib/utils";
-import type { URI, Address } from "@/types";
+import type { URI, Address, Chain } from "@/types";
 import TagsList from "./TagsList";
 import TagValue from "./TagValue";
 import Avatar from "./Avatar";
@@ -21,16 +21,16 @@ export default function AddressInfo({
   ensName,
   addressType = "address",
 }: {
-  chain: string;
+  chain: Chain;
   address: Address;
   ensName?: string;
   addressType?: "address" | "token" | "eoa" | "contract";
 }) {
-  const chainConfig = chains[chain as keyof typeof chains];
+  const chainConfig = chains[chain];
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { notesByURI, subscribeToNotesByURI } = useNostr();
-  const uri = generateURI("ethereum", { chainId: chainConfig.id, address });
+  const uri = generateURI(chain, { chainId: chainConfig.id, address });
   subscribeToNotesByURI([uri]);
   const latestNote = notesByURI[uri as URI]?.[0];
   const profileFromNote = getProfileFromNote(latestNote);
